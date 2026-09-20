@@ -1,3 +1,5 @@
+https://www.youtube.com/watch?v=DDxiQVte2aA
+
 Web Requests
 
 Overview & Architecture
