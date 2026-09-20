@@ -122,8 +122,76 @@ Key cURL Commands
 
     Authentication: curl -u admin:admin http://<IP>:<PORT>/ passes Basic Auth credentials.
 
-    POST Form Data: curl -X POST -d "param1=value1&param2=value2" http://<IP>:<PORT>/ submits form data.
+     POST Form Data: curl -X POST -d "param1=value1&param2=value2" http://<IP>:<PORT>/ submits form data.
 
     Authenticated JSON POST: curl -X POST -b "PHPSESSID=<TOKEN>" -H "Content-Type: application/json" -d '{"key":"value"}' http://<IP>:<PORT>/ sends JSON payloads with session cookies.
 
     API Operations: curl -X PUT updates resources, curl -X DELETE removes resources, and curl -s piped to jq formats JSON responses.
+
+
+
+HTB Module Questions & Walkthrough Solutions
+
+Question 1: File Download via cURL
+
+To get the flag, start the above exercise, then use cURL to download the file returned by '/download.php' in the server shown above.
+
+    curl $IP:$PORT/download.php
+    ls #to see the downloaded file name
+    cat #downloaded file
+
+    HTB{64$!c_cURL_....} write the commands above to get a flag like this :)
+
+
+HTTP Requests and Responses
+
+What is the HTTP method used while intercepting the request? (case-sensitive)
+    A/ GET
+
+    
+Send a GET request to the above server, and read the response headers to find the version of Apache running on the server, then submit it as the answer. (answer format: X.Y.ZZ)
+
+        curl -I http://$IP:$PORT/
+        
+2.4.??    something like this
+
+HTTP Headers
+
+The server above loads the flag after the page is loaded. Use the Network tab in the browser devtools to see what requests are made by the page, and find the request to the flag.
+
+The backend filters responses based on User-Agent. Browsers receive dummy output, while cURL requests yield the result.
+
+HTB{p493_r3qu3$t$_m0n!???} ** Check the network tab in your browser
+
+
+GET
+
+The exercise above seems to be broken, as it returns incorrect results. Use the browser devtools to see what is the request it is sending when we search, and use cURL to search for 'flag' and obtain the flag. 
+
+        curl -s "http://$IP:$PORT/search.php?search=flag" -H 'Authorization: Basic YWRtaW46YWRtaW4='
+
+        Answer: HTB{curl_g377??} WRITE THE COMMAND ABOVE IN YOUR TERMINAL
+
+POST
+
+Obtain a session cookie through a valid login, and then use the cookie with cURL to search for the flag through a JSON POST request to '/search.php' 
+
+1: first login with credantials provided
+2: then using the browser devtool go to storage > cookies
+or just from the network tab right click on the request and copy Request Header
+or just use curl with -i for viewing the header 
+3: finally using curl to capture the flag
+
+        curl -X POST -d '{"search":"london"}' -b 'PHPSESSID=YOURCOCKIE' -H 'Content-Type: application/json' http://<SERVER_IP>:<PORT>/search.php
+
+CRUD API
+
+Question : First, try to update any city’s name to be ‘flag’. Then, delete any city. Once done, search for a city named ‘flag’ to get the flag.
+
+ANSWER
+1: as requested update a name of any city to flag and verify if it is updated
+2: delete a city and verify if it is deleted
+3: finally capture the flag
+
+    HTB{crud_4p!_m4n!pul4t0r}
+
